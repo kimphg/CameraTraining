@@ -9,8 +9,9 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>WarShipController</RootNamespace>
     <AssemblyName>WarShipController</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -93,6 +94,12 @@
   <ItemGroup>
     <Content Include="Ship-steering-wheel.ico" />
     <None Include="TrackCam.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="UsbHid\UsbHid.csproj">
+      <Project>{83bc9702-4192-4654-b359-14cbd71d656e}</Project>
+      <Name>UsbHid</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

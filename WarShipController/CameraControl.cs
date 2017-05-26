@@ -9,12 +9,13 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-
+// added by Phuong
+using UsbHid;
+using UsbHid.USB.Classes.Messaging;
 // Added by Thinq
 using System.IO;
 using System.IO.Ports;
 using System.Xml;
-
 using System.Net;
 using System.Net.Sockets;
 using System.Runtime.Serialization;
@@ -24,12 +25,82 @@ namespace WarShipController
 {
     public partial class CameraControl : Form
     {
+        bool bt1 = false, bt2 = false, bt3 = false,
+              bt4 = false, bt5 = false, bt6 = false,
+              bt7 = false, bt8 = false, bt9 = false,
+             bt10 = false, bt11 = false, bt12 = false;
         internal Form1 _MainFrm;
-
+        double camPan = 0, camTilt=0, camZoom=0;
+        double camVpan = 0, camVtilt = 0;
+        double joystick_sensitive = 0;
+        UsbHidDevice Device;
         public CameraControl(Form1 MainFrm)
         {
             InitializeComponent();
             _MainFrm = MainFrm;
+            Device = new UsbHidDevice(0x046D, 0xC215);
+            Device.OnConnected += DeviceOnConnected;
+            Device.OnDisConnected += DeviceOnDisConnected;
+            Device.DataReceived += DeviceDataReceived;
+            bool isConnect = Device.Connect();
+            isConnect = isConnect;
+        }
+
+        private void DeviceDataReceived(byte[] data)
+        {
+            int newjy = (data[2] >> 2) | ((data[3] & 0x0f) << 6);
+            camVtilt = (newjy - 512) / 8;// giá trị từ -64 đến 64
+            int newjx = (data[1] | ((data[2] & 0x03) << 8));
+            camVpan = (newjx - 512) / 8;// giá trị từ -64 đến 64
+            joystick_sensitive = (255.0 - Convert.ToDouble(data[6])) / 255.0;// giá trị từ 0 đến 255
+            int new_mArrow = data[3] >> 4;
+            int buttons = (data[5] | (data[7]) << 8);
+            bool newbt1 = ((buttons & 0x01) > 0);
+            bool newbt2 = ((buttons & 0x02) > 0);
+            bool newbt3 = ((buttons & 0x04) > 0);
+            bool newbt4 = ((buttons & 0x08) > 0);
+            bool newbt5 = ((buttons & 0x10) > 0);
+            bool newbt6 = ((buttons & 0x20) > 0);
+            bool newbt7 = ((buttons & 0x40) > 0);
+            bool newbt8 = ((buttons & 0x80) > 0);
+            bool newbt9 = ((buttons & 0x0100) > 0);
+            bool newbt10 = ((buttons & 0x0200) > 0);
+            bool newbt11 = ((buttons & 0x0400) > 0);
+            bool newbt12 = ((buttons & 0x0800) > 0);
+            if (bt3 != newbt3)
+            {
+                bt3 = newbt3;
+
+                if (bt3)
+                {
+                    camZoom--;
+
+                }
+
+
+
+            }
+            if (bt5 != newbt5)
+            {
+                bt5 = newbt5;
+
+                if (bt5)
+                {
+                    camZoom++;
+
+                }
+
+            }
+        }
+
+        private void DeviceOnDisConnected()
+        {
+            //throw new NotImplementedException();
+        }
+
+        private void DeviceOnConnected()
+        {
+            //throw new NotImplementedException();
         }
 
         private void btnHide_Click(object sender, EventArgs e)
@@ -99,6 +170,17 @@ namespace WarShipController
 
             SendData(hashtable, 8888, _MainFrm.strIpAddr3D);
         }
+        private void SendControlCam(double pan,double tilt,double zoom)
+        {
+            Hashtable hashtable = new Hashtable();
+            hashtable["Control"] = "Enable";
+            //hashtable["Index"] = strIndex;
+            hashtable["LeftRight"] = pan.ToString();
+            hashtable["UpDown"] = tilt.ToString();
+            hashtable["Zoom"] = zoom.ToString();
+
+            SendData(hashtable, 8888, _MainFrm.strIpAddr3D);
+        }
 
         public static void SendData(Hashtable data, int port, string ipaddress)
         {
@@ -144,10 +226,13 @@ namespace WarShipController
             _strLeftRight = "None";
             _strZoom = ((float)Zoom.Value / 10).ToString();
         }
-
+        
         private void timerSendCamCtrl_Tick(object sender, EventArgs e)
         {
-            SendControlCam(_strCam, _strIndex, _strLeftRight, _strUpDown, _strZoom);
+            //SendControlCam(_strCam, _strIndex, _strLeftRight, _strUpDown, _strZoom);
+            camPan += camVpan * joystick_sensitive / 255.0;
+            camTilt += camVtilt * joystick_sensitive / 255.0;
+            SendControlCam(camPan,camTilt,camZoom);
         }
 
         private void Scroll_MouseDown(object sender, MouseEventArgs e)
