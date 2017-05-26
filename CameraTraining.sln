@@ -3,12 +3,12 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
 VisualStudioVersion = 12.0.21005.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WarShipController", "WarShipController\WarShipController.csproj", "{EB1DD4A1-47D3-4512-AC13-99D9A1B04B9C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CameraTraining", "CameraTraining\CameraTraining.csproj", "{00E9A3DE-68EF-4F85-AB91-4D9C18BE15EE}"
 	ProjectSection(ProjectDependencies) = postProject
 		{83BC9702-4192-4654-B359-14CBD71D656E} = {83BC9702-4192-4654-B359-14CBD71D656E}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UsbHid", "WarShipController\UsbHid\UsbHid.csproj", "{83BC9702-4192-4654-B359-14CBD71D656E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UsbHid", "CameraTraining\UsbHid\UsbHid.csproj", "{83BC9702-4192-4654-B359-14CBD71D656E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -16,10 +16,10 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{EB1DD4A1-47D3-4512-AC13-99D9A1B04B9C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{EB1DD4A1-47D3-4512-AC13-99D9A1B04B9C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{EB1DD4A1-47D3-4512-AC13-99D9A1B04B9C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{EB1DD4A1-47D3-4512-AC13-99D9A1B04B9C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{00E9A3DE-68EF-4F85-AB91-4D9C18BE15EE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{00E9A3DE-68EF-4F85-AB91-4D9C18BE15EE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{00E9A3DE-68EF-4F85-AB91-4D9C18BE15EE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{00E9A3DE-68EF-4F85-AB91-4D9C18BE15EE}.Release|Any CPU.Build.0 = Release|Any CPU
 		{83BC9702-4192-4654-B359-14CBD71D656E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{83BC9702-4192-4654-B359-14CBD71D656E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{83BC9702-4192-4654-B359-14CBD71D656E}.Release|Any CPU.ActiveCfg = Release|Any CPU
