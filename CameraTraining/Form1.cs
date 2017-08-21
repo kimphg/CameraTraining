@@ -109,15 +109,28 @@ namespace CameraTraining
         {
             
         }
-        bool sending = false;
+        //bool sending = false;
+        void sendUDPControl(double pan, double tilt, double zoom)
+        {
+            
+            string str = pan.ToString() + ";" + tilt.ToString() + ";" + zoom.ToString()+";";
+            byte[] data = Encoding.ASCII.GetBytes(str);
+            var client = new UdpClient();
+            IPEndPoint ep = new IPEndPoint(IPAddress.Parse(textBox1.Text), 8888); // endpoint where server is listening (testing localy)
+            client.Connect(ep); 
+
+            // send data
+            client.Send(data,data.Length);
+
+        }
         private void SendControlCam(double pan, double tilt, double zoom)
         {
             Hashtable hashtable = new Hashtable();
             hashtable["Control"] = "Enable";
             //hashtable["Index"] = strIndex;
-            hashtable["LeftRight"] = pan.ToString();
-            hashtable["UpDown"] = tilt.ToString();
-            hashtable["Zoom"] = zoom.ToString();
+            hashtable["LeftRight"] = "20";//pan.ToString();
+            hashtable["UpDown"] = "None";//tilt.ToString();
+            hashtable["Zoom"] = "None";//zoom.ToString();
 
             SendData(hashtable, 8888,textBox1.Text);
         }
@@ -127,11 +140,11 @@ namespace CameraTraining
             //sending = true;
             try
             {
-                
+                //IPEndPoint clientep = new IPEndPoint(IPAddress.Parse(ipaddress), 11000); // endpoint where server is listening (testing localy)
+                //client.Connect(clientep); 
                 var result = client.BeginConnect(ipaddress, port, null, null);
-                var success = result.AsyncWaitHandle.WaitOne(TimeSpan.FromSeconds(0.1));
-                if (!success)
-                    return;
+                var success = result.AsyncWaitHandle.WaitOne(TimeSpan.FromSeconds(0.02));
+                
 
                 //TcpClient client = new TcpClient(ipaddress, port); // have my connection established with a Tcp Server 
                 //if (!client.Connected) return;
@@ -147,7 +160,7 @@ namespace CameraTraining
 
             }
         }
-        //int oldCamZoom;
+        double curCamZoom = 120;
         private void timer1_Tick(object sender, EventArgs e)
         {
             //SendControlCam(_strCam, _strIndex, _strLeftRight, _strUpDown, _strZoom);
@@ -156,15 +169,21 @@ namespace CameraTraining
             if (Math.Abs(camVpan) > 10 || Math.Abs(camVtilt) > 10) dataChanged = true;
             if (dataChanged)
             {
-                camPan += camVpan * joystick_sensitive / 100.0 * camZoom;
+                curCamZoom += (camZoom - curCamZoom) / 3.0;
+                camPan += camVpan * joystick_sensitive / 100.0 * curCamZoom;
                 if (camPan >= 360.0) camPan -= 360.0;
                 if (camPan < 0.0) camPan += 360.0;
-                camTilt += camVtilt * joystick_sensitive / 100.0 * camZoom;
-                if (camTilt >= 360.0) camTilt -= 360.0;
-                if (camTilt < 0.0) camTilt += 360.0;
-                SendControlCam(camPan, camTilt, camZoom);
+                camTilt += camVtilt * joystick_sensitive / 100.0 * curCamZoom;
+                if (camTilt >= 90) camTilt = 90.0;
+                if (camTilt < -90) camTilt =-90.0;
+                sendUDPControl(camPan, camTilt, camZoom);
             }
             dataChanged = false;
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            dataChanged = true;
         }
     }
 }
